@@ -1,5 +1,6 @@
 {
   "name": "Thư mời cưới: Công Tuyền & Thảo Anh",
   "version": "1.0.0",
-  "image": "/thumbnail.jpg"
+  "image": "./asset/Photo/KIN06148ok.jpg",
+  "url": "https://thaoanhcongtuyen.netlify.app/"
 }
