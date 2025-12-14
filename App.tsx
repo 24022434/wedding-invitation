@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
 import Envelope from './components/Envelope';
-import Footer from './components/Footer';
 import Navigation from './components/Navigation';
 import HeroSection from './components/HeroSection';
+import CoupleSection from './components/CoupleSection';
+
 import MusicPlayer from './components/MusicPlayer';
-const CoupleSection = React.lazy(() => import('./components/CoupleSection'));
-const EventsSection = React.lazy(() => import('@/components/EventsSection'));
-const GallerySection = React.lazy(() => import('./components/GallerySection'));
+import GallerySection from './components/GallerySection';
+import Footer from './components/Footer';
+import EventsSection from "@/components/EventsSection.tsx";
 
 const metallicGradients = [
-    'linear-gradient(135deg, #F8F7F6, #E0DEDD)',
+    'linear-gradient(135deg, #F8F7F6, #E0DEDD)', // light cool grey
     'linear-gradient(135deg, #F2F0F0, #D8D6D4)', // soft grey
     'linear-gradient(135deg, #ECEAE9, #CFCDCB)', // muted grey
 ];
@@ -29,64 +30,57 @@ const App: React.FC = () => {
         if (!isEnvelopeOpened) return;
 
         let lastTime = 0;
-        let animationFrameId: number;
 
         const createParticle = (x: number, y: number) => {
             const now = Date.now();
-            if (now - lastTime < 100) return; // Increased throttle to 100ms
+            if (now - lastTime < 60) return; // ✨ throttle luxury
             lastTime = now;
 
-            animationFrameId = requestAnimationFrame(() => {
-                const gradient =
-                    metallicGradients[Math.floor(Math.random() * metallicGradients.length)];
+            const gradient =
+                metallicGradients[Math.floor(Math.random() * metallicGradients.length)];
 
-                const t = Math.random() * Math.PI * 2;
+            const t = Math.random() * Math.PI * 2;
 
-                // ❤️ Parametric heart (trail dài hơn)
-                const scale = 26;
-                const dx = scale * Math.pow(Math.sin(t), 3);
-                const dy = -(
+            // ❤️ Parametric heart (trail dài hơn)
+            const scale = 26;
+            const dx = scale * Math.pow(Math.sin(t), 3);
+            const dy =
+                -(
                     18 * Math.cos(t) -
                     7 * Math.cos(2 * t) -
                     3 * Math.cos(3 * t)
                 );
 
-                const el = document.createElement('span');
-                el.innerText = '❤';
+            const el = document.createElement('span');
+            el.innerText = '❤';
 
-                el.style.position = 'fixed';
-                el.style.left = `${x}px`;
-                el.style.top = `${y}px`;
-                el.style.pointerEvents = 'none';
-                el.style.fontSize = '18px';
-                el.style.zIndex = '9999';
-                el.style.opacity = '0.95';
-                el.style.willChange = 'transform, opacity'; // Optimization
+            el.style.position = 'fixed';
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
+            el.style.pointerEvents = 'none';
+            el.style.fontSize = '18px';
+            el.style.zIndex = '9999';
+            el.style.opacity = '0.95';
 
-                // 🌟 metallic text
-                el.style.background = gradient;
-                el.style.backgroundClip = 'text';
-                el.style.webkitBackgroundClip = 'text';
-                el.style.color = 'transparent';
+            // 🌟 metallic text
+            el.style.background = gradient;
+            el.style.backgroundClip = 'text';
+            el.style.webkitBackgroundClip = 'text';
+            el.style.color = 'transparent';
 
-                // 🕯️ candle glow
-                el.style.filter =
-                    'blur(0.25px) drop-shadow(0 6px 14px rgba(230, 201, 138, 0.55))';
+            // 🕯️ candle glow
+            el.style.filter =
+                'blur(0.25px) drop-shadow(0 6px 14px rgba(230, 201, 138, 0.55))';
 
-                el.style.setProperty('--dx', `${dx}px`);
-                el.style.setProperty('--dy', `${dy}px`);
+            el.style.setProperty('--dx', `${dx}px`);
+            el.style.setProperty('--dy', `${dy}px`);
 
-                el.style.animation =
-                    'lux-heart 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+            el.style.animation =
+                'lux-heart 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards';
 
-                document.body.appendChild(el);
+            document.body.appendChild(el);
 
-                setTimeout(() => {
-                    if (el && el.parentNode) {
-                        el.parentNode.removeChild(el);
-                    }
-                }, 2200);
-            });
+            setTimeout(() => el.remove(), 2200);
         };
 
         const handleMouseMove = (e: MouseEvent) => {
@@ -98,18 +92,41 @@ const App: React.FC = () => {
             if (t) createParticle(t.clientX, t.clientY);
         };
 
-        window.addEventListener('mousemove', handleMouseMove, { passive: true });
-        window.addEventListener('touchmove', handleTouchMove, { passive: true });
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('touchmove', handleTouchMove);
 
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('touchmove', handleTouchMove);
-            if (animationFrameId) cancelAnimationFrame(animationFrameId);
         };
     }, [isEnvelopeOpened]);
 
     return (
         <div className="min-h-screen relative overflow-hidden bg-wedding-cream">
+            {/* ✨ LUXURY HEART ANIMATION */}
+            <style>
+                {`
+          @keyframes lux-heart {
+            0% {
+              transform: translate(-50%, -50%) scale(0.6);
+              opacity: 0;
+            }
+            25% {
+              opacity: 1;
+            }
+            100% {
+              transform:
+                translate(
+                  calc(-50% + var(--dx)),
+                  calc(-50% + var(--dy))
+                )
+                scale(1.35);
+              opacity: 0;
+            }
+          }
+        `}
+            </style>
+
             <Envelope onOpen={handleEnvelopeOpen} />
 
             {isEnvelopeOpened && (
@@ -119,11 +136,10 @@ const App: React.FC = () => {
 
                     <main>
                         <HeroSection />
-                        <React.Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}>
-                            <CoupleSection />
-                            <EventsSection />
-                            <GallerySection />
-                        </React.Suspense>
+                        <CoupleSection />
+                        <EventsSection />
+                        <GallerySection />
+
                     </main>
 
                     <Footer />

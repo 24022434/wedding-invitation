@@ -1,0 +1,1 @@
+@layer utilities{.scrollbar-hide::-webkit-scrollbar{display:none}.scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}}@keyframes lux-heart{0%{transform:translate(-50%,-50%) scale(.6);opacity:0}25%{opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.35);opacity:0}}
